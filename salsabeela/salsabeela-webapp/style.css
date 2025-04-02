@@ -1,0 +1,147 @@
+/* Basic Reset & Body Styling */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    line-height: 1.6;
+    color: #333;
+    background-color: #f8f9fa;
+    padding: 1rem;
+    max-width: 900px;
+    margin: 2rem auto;
+}
+
+/* Header */
+header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #dee2e6;
+}
+
+header h1 {
+    color: #495057;
+    font-weight: 300;
+}
+
+/* Main Layout */
+main {
+    display: grid;
+    grid-template-columns: 1fr; /* Single column layout */
+    gap: 2rem;
+}
+
+/* Controls Section */
+.controls h2, .results h2 {
+    font-weight: 400;
+    color: #6c757d;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 0.5rem;
+}
+
+.control-group {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    align-items: center;
+    gap: 0.5rem; /* Spacing between elements */
+}
+
+.control-group label {
+    margin-right: 0.25rem;
+    font-size: 0.9em;
+    color: #495057;
+}
+
+.control-group input[type="number"],
+.control-group input[type="text"],
+.control-group select {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    font-size: 0.9em;
+    flex-grow: 1; /* Allow inputs to grow */
+    min-width: 60px; /* Minimum width for number inputs */
+}
+.control-group input[type="text"] {
+    min-width: 150px; /* More width for text search */
+}
+
+
+.control-group button {
+    padding: 0.5rem 1rem;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.2s ease;
+}
+
+.control-group button:hover {
+    background-color: #495057;
+}
+
+/* Results Section */
+.results {
+    background-color: #fff;
+    padding: 1.5rem;
+    border: 1px solid #e9ecef;
+    border-radius: 0.3rem;
+    min-height: 150px; /* Ensure it has some height */
+}
+
+#results-output {
+    font-family: 'Noto Naskh Arabic', serif; /* Example Arabic font */
+    font-size: 1.4em; /* Larger size for Arabic */
+    line-height: 1.8;
+    color: #212529;
+    white-space: pre-wrap; /* Preserve whitespace and wrap */
+    text-align: right; /* Align Arabic text right */
+}
+
+#results-output p { /* Style the placeholder text */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; /* Back to UI font */
+    font-size: 1rem;
+    color: #6c757d;
+    text-align: center;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 1rem;
+    border-top: 1px solid #dee2e6;
+    font-size: 0.85em;
+    color: #6c757d;
+}
+
+/* Basic Responsiveness */
+@media (max-width: 600px) {
+    body {
+        margin: 1rem auto;
+        padding: 0.5rem;
+    }
+
+    .control-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .control-group label {
+        margin-bottom: 0.25rem;
+        margin-right: 0;
+    }
+
+    .control-group button {
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+}
