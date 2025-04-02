@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salsabeela Quran Explorer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Salsabeela Quran Explorer</h1>
+    </header>
+
+    <main>
+        <section class="controls">
+            <h2>Explore</h2>
+            <div class="control-group">
+                <label for="surah-input">Surah:</label>
+                <input type="number" id="surah-input" name="surah" min="1" max="114">
+                <label for="ayah-input">Ayah:</label>
+                <input type="number" id="ayah-input" name="ayah" min="1">
+                <button id="get-ayah-btn">Get Ayah</button>
+                <button id="get-analysis-btn">Get Analysis</button>
+            </div>
+             <div class="control-group">
+                 <label for="surah-info-input">Surah Info:</label>
+                 <input type="number" id="surah-info-input" name="surah-info" min="1" max="114">
+                 <button id="get-surah-info-btn">Get Info</button>
+            </div>
+            <div class="control-group">
+                <label for="search-input">Search (Root/Lemma):</label>
+                <input type="text" id="search-input" name="search">
+                <select id="search-type">
+                    <option value="root">Root</option>
+                    <option value="lemma">Lemma</option>
+                </select>
+                <button id="search-btn">Search</button>
+            </div>
+        </section>
+
+        <section class="results">
+            <h2>Results</h2>
+            <div id="results-output" dir="rtl">
+                <!-- Results will be displayed here -->
+                <p>Enter parameters above and click a button to see results.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Powered by Salsabeela MCP</p>
+    </footer>
+
+    <!-- Basic script placeholder for future interaction -->
+    <!-- <script src="script.js"></script> -->
+</body>
+</html>
