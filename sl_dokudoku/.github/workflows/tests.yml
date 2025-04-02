@@ -1,0 +1,14 @@
+name: E2E Tests
+on: [push, pull_request]
+
+jobs:
+  cypress-run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+      - uses: cypress-io/github-action@v6
+        with:
+          start: pnpm dev
+          wait-on: 'http://localhost:3000'
+          command: pnpm test:e2e 

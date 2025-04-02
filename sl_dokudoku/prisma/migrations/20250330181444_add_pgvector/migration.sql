@@ -1,0 +1,1 @@
+-- Enable pgvector extension\nCREATE EXTENSION IF NOT EXISTS vector;

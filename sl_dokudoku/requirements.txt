@@ -1,0 +1,14 @@
+fastapi==0.115.12
+uvicorn==0.34.0
+langchain==0.3.21
+langchain-openai==0.3.11
+langchain-community==0.3.20
+sentence-transformers==4.0.1
+psycopg2-binary==2.9.10
+python-dotenv==1.1.0
+sqlalchemy==2.0.40
+pydantic==2.11.1
+numpy==2.2.4
+PyMuPDF==1.23.26  # For PDF processing
+python-multipart  # For file uploads
+tenacity==9.0.0  # For retrying operations 

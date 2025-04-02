@@ -1,0 +1,206 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Add test-specific configuration
+generator client {
+  provider        = "prisma-client-js"
+  output          = "./generated/client"
+  previewFeatures = ["interactiveTransactions"]
+}
+
+// Note: pgvector extension is enabled via SQL migration instead of schema
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          String    @default("USER")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts       Account[]
+  sessions       Session[]
+  ownedDocuments Document[]        @relation("DocumentOwner")
+  tags           Tag[]
+  folders        Folder[]
+  sharedDocuments DocumentShare[]  @relation("SharedDocuments")
+  comments       Comment[]
+  versions       DocumentVersion[]
+}
+
+model Document {
+  id        String   @id @default(cuid())
+  name      String
+  content   String?
+  fileUrl   String?
+  fileType  String?
+  fileSize  Int?
+  userId    String
+  folderId  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  owner     User              @relation("DocumentOwner", fields: [userId], references: [id], onDelete: Cascade)
+  folder    Folder?           @relation(fields: [folderId], references: [id], onDelete: SetNull)
+  tags      DocumentTag[]
+  shares    DocumentShare[]   @relation("DocumentShares")
+  comments  Comment[]
+  versions  DocumentVersion[]
+  chunks    DocumentChunk[]   // Add relation to DocumentChunk
+  extractedData ExtractedDatum[] // Add relation to ExtractedDatum
+
+  @@index([userId])
+  @@index([folderId])
+}
+
+model Tag {
+  id        String   @id @default(cuid())
+  name      String
+  color     String
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  documents DocumentTag[]
+
+  @@unique([name, userId])
+  @@index([userId])
+}
+
+model DocumentTag {
+  documentId String
+  tagId      String
+  createdAt  DateTime @default(now())
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  tag        Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([documentId, tagId])
+  @@index([documentId])
+  @@index([tagId])
+}
+
+model Folder {
+  id        String   @id @default(cuid())
+  name      String
+  userId    String
+  parentId  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parent    Folder?   @relation("FolderChildren", fields: [parentId], references: [id], onDelete: SetNull)
+  children  Folder[]  @relation("FolderChildren")
+  documents Document[]
+
+  @@index([userId])
+  @@index([parentId])
+}
+
+model DocumentShare {
+  id         String   @id @default(cuid())
+  documentId String
+  userId     String
+  permission String   @default("VIEW") // "VIEW" or "EDIT"
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  document   Document @relation("DocumentShares", fields: [documentId], references: [id], onDelete: Cascade)
+  user       User     @relation("SharedDocuments", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([documentId, userId])
+  @@index([documentId])
+  @@index([userId])
+}
+
+model Comment {
+  id         String   @id @default(cuid())
+  content    String
+  documentId String
+  userId     String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([documentId])
+  @@index([userId])
+}
+
+model DocumentVersion {
+  id         String   @id @default(cuid())
+  version    Int
+  content    String?
+  fileUrl    String?
+  fileType   String?
+  fileSize   Int?
+  documentId String
+  userId     String
+  createdAt  DateTime @default(now())
+
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([documentId, version])
+  @@index([documentId])
+  @@index([userId])
+}
+
+// Model for storing extracted data points
+model ExtractedDatum {
+  id        String   @id @default(cuid())
+  type      String
+  content   String
+  metadata  Json?
+  document  Document @relation(fields: [documentId], references: [id])
+  documentId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([documentId])
+}
+
+model DocumentChunk {
+  id          String   @id @default(cuid())
+  documentId  String
+  chunkIndex  Int
+  text        String   @db.Text
+  embedding   Bytes    @db.ByteA  // Store embedding as binary data
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  document    Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@index([documentId])
+}
